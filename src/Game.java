@@ -22,6 +22,13 @@ public class Game {
     private int USERBAL = 500;
     private int DEALER;
 
+    private String[] ACES = {"ACE OF HEARTS", "ACE OF SPADES", "ACE OF COLVERS", "ACE OF DIAMONDS"};
+    private String[] KING = {"KING OF HEARTS", "KING OF SPADES", "KING OF COLVERS", "KING OF DIAMONDS"};
+    private String[] QUEENS = {"QUEEN OF HEARTS", "QUEEN OF SPADES", "QUEEN OF COLVERS", "QUEEN OF DIAMONDS"};
+    private String[] JACKS = {"JACK OF HEARTS", "JACK OF SPADES", "JACK OF COLVERS", "JACK OF DIAMONDS"};
+
+    
+
 
     // Set game DECK
     private int[] setGameDeck() {
@@ -114,14 +121,20 @@ public class Game {
 	    //Check Player Hand First
 	    if (userHand > 21){
 		    playerTurn = false;
+		    System.out.println("YOU BUSTED OUT");
 		    again(input);
+		    return;
 		    
 
 	    } else if (getUserBal() < 0){
 		    playerTurn = false;
-		    again(input);
 
 	    
+	    } else if (userHand == 21){
+		    playerTurn = false;
+		    System.out.println("YOU GOT BLACKJACK!");
+		    setUserBal( getUserBal() + ( bet *2 ));
+		    again(input);
 	    }
 
 	    //Then ask for playe decision
@@ -152,6 +165,10 @@ public class Game {
 				 dealerTurn = false;
 			 } else if (dealerHand == userHand){
 				 dealerTurn = false;
+				 System.out.println("TIE");
+				 setUserBal( getUserBal() + bet);
+				 again(input);
+				 return;
 			 }
       		}
             } else {
@@ -160,7 +177,7 @@ public class Game {
         }
 
 	//End of Loop
-	if (userHand == 21 || userHand > dealerHand || dealerHand > 21) {
+	if (userHand > dealerHand || dealerHand > 21) {
 		System.out.println("You Won!");
 		setUserBal( getUserBal() + (bet * 2));
 		again(input);
@@ -169,9 +186,8 @@ public class Game {
 		System.out.println("Dealer Won!");
 		again(input);
 
-	} else if (userHand == dealerHand){
-		setUserBal( getUserBal() + bet);
-		again(input);
+	} else if (getUserBal() == 0 || getUserBal() < 0){
+		System.out.println("YOURE BROKE ASF GTFO OUTTA HERE");
 	}
     }
 
