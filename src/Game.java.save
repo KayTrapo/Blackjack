@@ -1,0 +1,152 @@
+import java.util.Scanner;
+import java.util.Random;
+
+
+public class Game {
+    //Random
+    Random random = new Random();
+
+    //Game Dif
+    private final int EASY = 2;
+    private final int NORMAL = 5;
+    private final int HARD = 10;
+
+    // Face card & Ace values
+    private final int KING = 10;
+    private final int QUEEN = 10;
+    private final int JACK = 10;
+    private int ACE = 1;
+
+
+    private int USER;
+    private int USERBAL = 500;
+    private int DEALER;
+
+
+    // Set game DECK
+    private int[][] setGameDeck(int gameDiff) {
+        int[][] deck = {
+                {gameDiff, ACE},
+                {gameDiff, 2},
+                {gameDiff, 3},
+                {gameDiff, 4},
+                {gameDiff, 5},
+                {gameDiff, 6},
+                {gameDiff, 7},
+                {gameDiff, 8},
+                {gameDiff, 9},
+                {gameDiff, 10},
+                {gameDiff, JACK},
+                {gameDiff, QUEEN},
+                {gameDiff, KING}
+        };
+
+        return deck;
+    }
+
+    private int dealCard(int[][] deck) {
+        int num = deck[random.nextInt()][random.nextInt()];
+        return num;
+    }
+
+    private void setUserBal(int amount) {
+        USERBAL = amount;
+    }
+
+    private int getUserBal() {
+        return USERBAL;
+    }
+
+
+    private boolean checkPlaceBet(int amount) {
+        if (amount > getUserBal()) {
+            return false;
+        } else {
+            int newBal = getUserBal() - amount;
+            setUserBal(newBal);
+            return true;
+        }
+    }
+
+
+    private int setGameDiff(String diff) {
+        if (diff.equalsIgnoreCase("easy")) {
+            return EASY;
+        } else if (diff.equalsIgnoreCase("normal")) {
+            return NORMAL;
+        } else if (diff.equalsIgnoreCase("hard")) {
+            return HARD;
+        } else {
+            return EASY;
+        }
+    }
+
+
+    //User picks diffuclty & place bets
+    private void setup(Scanner input) {
+        System.out.println("Please select a difficulty (easy, normal, or hard):");
+        String getDiff = input.nextLine();
+        int gameDiff = setGameDiff(getDiff);
+
+
+        System.out.println("Place your bets | Place in increments of 5 | Fun Fact: 99.9% of losers quit before they WIN:");
+        int placeBet = input.nextInt();
+        input.nextLine();
+
+        boolean checkBet = checkPlaceBet(placeBet);
+
+        if (!checkBet) {
+            System.out.println("Please place another bet!");
+            setup(input);
+        } else {
+            System.out.println("Lets start!");
+            int[][] GAMEDECK = setGameDeck(gameDiff);
+            game(input, GAMEDECK, placeBet);
+        }
+    }
+
+    private void game(Scanner input, int[][] deck, int bet) {
+        int userHand = 0;
+
+	userHand += dealCard(deck)
+	userHand += dealCard(deck)
+        int dealerHand = 0;
+        boolean playerTurn = true;
+        while (userHand < 21 && getUserBal() > 0 && playerTurn) {
+            System.out.println("Your bet: " + bet + " | Your balance: " + getUserBal() + " | YOUR HAND: " + userHand);
+            System.out.println("Please enter 'hit' or 'stand':");
+	    String choice = input.nextLine();
+            if (choice.equalsIgnoreCase("hit")) {
+                userHand += dealCard(deck);
+                
+            } else if (choice.equalsIgnoreCase("stand")) {
+                playerTurn = false;
+                dealerHand += dealCard(deck);
+                System.out.println("Dealer's hand: " + dealerHand);
+                
+            } else {
+                System.out.println("Please enter 'hit' or 'stand'");
+            }
+        }
+        
+        while (dealerHand < 21) {
+            dealerHand += dealCard(deck);
+            if (dealerHand > 21) {
+                System.out.println("Dealer busts!");
+                setUserBal( getUserBal() + (bet * 2));
+                
+            } else if (dealerHand == 21) {
+                System.out.println("Dealer has Blackjack!");
+                setUserBal( getUserBal() - bet);
+                
+            } else {
+                System.out.println("Dealer's hand: " + dealerHand);
+            }
+        }
+    }
+}
+
+
+
+
+
